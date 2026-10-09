@@ -1,0 +1,17 @@
+name: src-payment
+services:
+  postgresql:
+    image: postgres:latest
+    container_name: src_postgresql
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: srcpgpass
+    volumes:
+      - postgres:/var/lib/src_postgresql/data
+
+
+volumes:
+  postgres:

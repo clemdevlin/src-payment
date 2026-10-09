@@ -1,4 +1,4 @@
-export { default } from "next-auth/middleware";
+export { default as proxy } from "next-auth/middleware";
 
 // Route-level gate: unauthenticated visitors to any admin page are sent to
 // /admin/login. The public payment page (/), /payment-status, /verify and the
