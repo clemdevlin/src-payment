@@ -171,6 +171,7 @@ export async function POST(req: NextRequest) {
             paymentType: "CONTINUING", // legacy field required by the shared provider type; real data is in `items`
             studentReference: referenceNumber,
             departmentId: department.id,
+            academicSessionId: session.id,
             studentId: student.id,
             items: lineItems,
           },

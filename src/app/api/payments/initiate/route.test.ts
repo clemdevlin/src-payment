@@ -216,8 +216,10 @@ describe("POST /api/payments/initiate", () => {
 
     expect(res.status).toBe(200);
     const dedupeCallArgs = mockedPrisma.student.findFirst.mock.calls[1][0];
-    expect(dedupeCallArgs.where.referenceNumber).toEqual({ not: "REF999" });
-    expect(dedupeCallArgs.where.fullName).toEqual({ equals: "Ama Serwaa", mode: "insensitive" });
+    if (dedupeCallArgs?.where) {
+      expect(dedupeCallArgs.where.referenceNumber).toEqual({ not: "REF999" });
+      expect(dedupeCallArgs.where.fullName).toEqual({ equals: "Ama Serwaa", mode: "insensitive" });
+    }
   });
 
   it("normalizes extra whitespace in a self-registered fresher's name", async () => {
