@@ -9,8 +9,9 @@ import { requireDepartmentAccess, UnauthorizedError, ForbiddenError } from "@/li
 // restricted to their own department by requireDepartmentAccess.
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    await requireDepartmentAccess(params.id);
-    const departmentId = params.id;
+    const { id } = await params;
+    await requireDepartmentAccess(id);
+    const departmentId = id;
 
     const [department, studentsByLevel, paymentStatusGroups, recentPayments, trendPayments] =
       await Promise.all([

@@ -14,10 +14,11 @@ import { encryptSecret } from "@/lib/crypto/field-encryption";
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     await requireSuperAdmin();
 
     const department = await prisma.department.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { id: true, name: true },
     });
     if (!department) {
@@ -25,7 +26,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     }
 
     const config = await prisma.smsConfiguration.findUnique({
-      where: { departmentId: params.id },
+      where: { departmentId: id },
     });
 
     // apiKey is never sent to the client - only whether it's set, so the
@@ -53,12 +54,13 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
     const body = await req.json();
     const parsed = smsConfigUpdateSchema.parse(body);
 
     const department = await prisma.department.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { id: true },
     });
     if (!department) {
@@ -74,7 +76,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const encryptedSecretIfProvided = (v: string | undefined) => (v ? encryptSecret(v) : undefined);
 
     const existing = await prisma.smsConfiguration.findUnique({
-      where: { departmentId: params.id },
+      where: { departmentId: id },
     });
 
     const data = {
@@ -90,8 +92,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     };
 
     const config = await prisma.smsConfiguration.upsert({
-      where: { departmentId: params.id },
-      create: { departmentId: params.id, ...data },
+      where: { departmentId: id },
+      create: { departmentId: id, ...data },
       update: data,
     });
 
@@ -99,7 +101,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     // whether it changed, same as secretKey on the payment config route.
     await logAudit({
       userId: user.id,
-      departmentId: params.id,
+      departmentId: id,
       action: "SMS_CONFIG_UPDATED",
       entity: "SmsConfiguration",
       entityId: config.id,

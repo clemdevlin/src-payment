@@ -8,8 +8,9 @@ import { logAudit } from "@/lib/audit";
 // GET is used purely to populate the edit form. It performs NO mutation.
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireAuth();
-    const student = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const student = await prisma.student.findUniqueOrThrow({ where: { id } });
     await requireDepartmentAccess(student.departmentId);
     return NextResponse.json({ student });
   } catch (err) {
@@ -22,7 +23,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 // opening the edit dialog and never on "Cancel".
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const existing = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const { id } = await params;
+    const existing = await prisma.student.findUniqueOrThrow({ where: { id } });
     const user = await requireDepartmentAccess(existing.departmentId);
 
     const body = await req.json();
@@ -53,7 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const student = await prisma.student.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         fullName: parsed.fullName,
         referenceNumber: parsed.referenceNumber,
@@ -80,17 +82,18 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const existing = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const { id } = await params;
+    const existing = await prisma.student.findUniqueOrThrow({ where: { id } });
     const user = await requireDepartmentAccess(existing.departmentId);
 
-    await prisma.student.delete({ where: { id: params.id } });
+    await prisma.student.delete({ where: { id } });
 
     await logAudit({
       userId: user.id,
       departmentId: existing.departmentId,
       action: "STUDENT_DELETED",
       entity: "Student",
-      entityId: params.id,
+      entityId: id,
       metadata: { referenceNumber: existing.referenceNumber },
     });
 

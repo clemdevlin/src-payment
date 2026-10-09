@@ -9,10 +9,11 @@ import { buildClearanceReceiptPdf } from "@/lib/receipts";
 // couldn't be sent).
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     await requireSuperAdmin();
-    await prisma.student.findUniqueOrThrow({ where: { id: params.id }, select: { id: true } });
+    await prisma.student.findUniqueOrThrow({ where: { id }, select: { id: true } });
 
-    const built = await buildClearanceReceiptPdf(params.id);
+    const built = await buildClearanceReceiptPdf(id);
     if (!built) {
       return NextResponse.json({ error: "This student has no active clearance receipt" }, { status: 404 });
     }

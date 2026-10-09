@@ -9,10 +9,11 @@ import { departmentLogoUpdateSchema, departmentReceiptBrandingUpdateSchema } fro
 // SUPER_ADMIN can look up any department, DEPARTMENT_ADMIN only their own.
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireAuth();
 
     const department = await prisma.department.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         academicSession: true,
         _count: { select: { students: true, payments: true } },
@@ -38,6 +39,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 // comment on Department.status) so this only ever flips status/archivedAt.
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
     const body = await req.json().catch(() => ({}));
     const action = body?.action;
@@ -49,7 +51,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       );
     }
 
-    const department = await prisma.department.findUnique({ where: { id: params.id } });
+    const department = await prisma.department.findUnique({ where: { id } });
     if (!department) {
       return NextResponse.json({ error: "Department not found" }, { status: 404 });
     }
@@ -57,7 +59,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (action === "update_logo") {
       const parsed = departmentLogoUpdateSchema.parse(body);
       const updated = await prisma.department.update({
-        where: { id: params.id },
+        where: { id },
         data: { logoUrl: parsed.logoUrl },
       });
 
@@ -76,7 +78,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (action === "update_receipt_branding") {
       const parsed = departmentReceiptBrandingUpdateSchema.parse(body);
       const updated = await prisma.department.update({
-        where: { id: params.id },
+        where: { id },
         data: parsed,
       });
 
@@ -111,7 +113,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const updated = await prisma.department.update({
-      where: { id: params.id },
+      where: { id },
       data:
         action === "archive"
           ? { status: "ARCHIVED", archivedAt: new Date() }

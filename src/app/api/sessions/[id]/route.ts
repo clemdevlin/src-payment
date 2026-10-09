@@ -7,12 +7,13 @@ import { logAudit } from "@/lib/audit";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
     const body = await req.json();
     const parsed = academicSessionSchema.partial().parse(body);
 
     const session = await prisma.academicSession.update({
-      where: { id: params.id },
+      where: { id },
       data: parsed,
     });
 
@@ -26,12 +27,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
 
     // Highly destructive - require explicit confirmation token in body matching the session name,
     // enforced client-side too, but re-checked here since this is the authoritative boundary.
     const body = await req.json().catch(() => ({}));
-    const existing = await prisma.academicSession.findUniqueOrThrow({ where: { id: params.id } });
+    const existing = await prisma.academicSession.findUniqueOrThrow({ where: { id } });
 
     if (body.confirmName !== existing.name) {
       return NextResponse.json(
@@ -40,9 +42,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       );
     }
 
-    await prisma.academicSession.delete({ where: { id: params.id } });
+    await prisma.academicSession.delete({ where: { id } });
 
-    await logAudit({ userId: user.id, action: "ACADEMIC_SESSION_DELETED", entity: "AcademicSession", entityId: params.id });
+    await logAudit({ userId: user.id, action: "ACADEMIC_SESSION_DELETED", entity: "AcademicSession", entityId: id });
 
     return NextResponse.json({ success: true });
   } catch (err) {

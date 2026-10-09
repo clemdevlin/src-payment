@@ -13,10 +13,11 @@ import { logAudit } from "@/lib/audit";
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     await requireSuperAdmin();
 
     const department = await prisma.department.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { id: true, name: true },
     });
     if (!department) {
@@ -24,7 +25,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     }
 
     const config = await prisma.emailConfiguration.findUnique({
-      where: { departmentId: params.id },
+      where: { departmentId: id },
     });
 
     return NextResponse.json({
@@ -44,12 +45,13 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
     const body = await req.json();
     const parsed = emailConfigUpdateSchema.parse(body);
 
     const department = await prisma.department.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { id: true },
     });
     if (!department) {
@@ -57,7 +59,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const existing = await prisma.emailConfiguration.findUnique({
-      where: { departmentId: params.id },
+      where: { departmentId: id },
     });
 
     const data = {

@@ -25,7 +25,8 @@ import { logAudit } from "@/lib/audit";
 // dashboard, or the student says the payment page never completed).
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const student = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const { id } = await params;
+    const student = await prisma.student.findUniqueOrThrow({ where: { id } });
     const user = await requireDepartmentAccess(student.departmentId);
 
     const pending = await prisma.payment.findMany({

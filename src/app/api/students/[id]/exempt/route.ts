@@ -16,10 +16,11 @@ const exemptSchema = z.object({
 // ever sees "Dues Cleared".
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
     const { reason } = exemptSchema.parse(await req.json());
 
-    const student = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const student = await prisma.student.findUniqueOrThrow({ where: { id } });
 
     if (student.isExempt) {
       return NextResponse.json({ error: "This student is already marked Dues Cleared" }, { status: 409 });
@@ -86,8 +87,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 // voided (kept, never deleted) so /verify stops accepting it.
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireSuperAdmin();
-    const student = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const student = await prisma.student.findUniqueOrThrow({ where: { id } });
 
     if (!student.isExempt) {
       return NextResponse.json({ error: "This student is not marked Dues Cleared" }, { status: 409 });

@@ -24,7 +24,7 @@ const mockedPrisma = vi.mocked(prisma, true);
 const mockedAccess = vi.mocked(requireDepartmentAccess);
 const mockedReconcile = vi.mocked(reconcilePayment);
 
-const params = { params: { id: "student_1" } };
+const params = { params: Promise.resolve({ id: "student_1" }) };
 const req = () => new NextRequest("http://localhost/api/students/student_1/verify-payment", { method: "POST" });
 
 beforeEach(() => {

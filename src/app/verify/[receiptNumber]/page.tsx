@@ -20,7 +20,8 @@ const RATE_LIMIT_MAX_REQUESTS = 30;
 const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
 
 export default async function VerifyReceiptPage({ params }: { params: { receiptNumber: string } }) {
-  const ip = getClientIp({ headers: headers() });
+  const { receiptNumber } = await params;
+  const ip = getClientIp({ headers: await headers() });
   const rateLimit = checkRateLimit(`receipts:verify:${ip}`, RATE_LIMIT_MAX_REQUESTS, RATE_LIMIT_WINDOW_MS);
 
   if (!rateLimit.allowed) {

@@ -17,7 +17,8 @@ import { reconcilePayment } from "@/lib/payments/reconcile";
 // first, and only cancel once the provider confirms it didn't go through.
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const student = await prisma.student.findUniqueOrThrow({ where: { id: params.id } });
+    const { id } = await params;
+    const student = await prisma.student.findUniqueOrThrow({ where: { id } });
     const user = await requireDepartmentAccess(student.departmentId);
 
     const pending = await prisma.payment.findFirst({

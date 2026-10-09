@@ -15,8 +15,9 @@ import { resolveNotificationFailure } from "@/lib/notification-failures";
 // resolve a failure belonging to their own department.
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
+    const { id } = await params;
     const user = await requireAuth();
-    const resolved = await resolveNotificationFailure(user, params.id);
+    const resolved = await resolveNotificationFailure(user, id);
     if (!resolved) {
       return NextResponse.json({ error: "Notification failure not found or not accessible" }, { status: 404 });
     }
