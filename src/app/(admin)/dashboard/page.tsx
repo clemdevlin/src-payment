@@ -45,7 +45,6 @@ export default async function DashboardPage() {
       <PageHeader title={department?.name ?? "Department"} subtitle="Live payment monitoring & control" />
       <NotificationFailuresAlert failures={notificationFailures} showDepartmentName={false} />
       <DepartmentFilterDashboard departments={department ? [{ id: department.id, name: department.name }] : []} />
-      <Link href="/students" className="admin-btn-secondary">Manage Students</Link>
     </div>
   );
 }
@@ -59,7 +58,10 @@ function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
         </h1>
         <p className="text-sm text-admin-muted">{subtitle}</p>
       </div>
-      <RefreshButton />
+      <div className="flex items-center justify-center gap-4">
+        <Link href="/students" className="admin-btn-secondary">Manage Students</Link>
+        <RefreshButton />
+      </div>
     </div>
   );
 }

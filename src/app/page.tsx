@@ -30,7 +30,7 @@ export default async function PaymentPage() {
           <SrcPaymentForm />
         )}
 
-        <div className="text-center text-xs text-portal-muted">
+        <div className="text-center text-xs text-gray-300">
           <p>Payments are processed securely by Paystack.</p>
           <p className="mt-1">Keep your receipt/reference after payment.</p>
         </div>
