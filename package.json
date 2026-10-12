@@ -25,7 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^18.0.7",
-    "lucide-react": "^1.54.0",
+    "lucide-react": "^1.55.0",
     "next": "16.4.0",
     "next-auth": "^4.24.15",
     "papaparse": "^5.7.0",
@@ -34,11 +34,11 @@
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-hook-form": "^7.89.0",
+    "react-hook-form": "^7.90.0",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.7.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^4.6.5"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@types/node": "^26",
@@ -54,7 +54,7 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
     "typescript": "^7",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.4"
   },
   "description": "Single-system student item payment portal with system-wide payment settings"
 }
